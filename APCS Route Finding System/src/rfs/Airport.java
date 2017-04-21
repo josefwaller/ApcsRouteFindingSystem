@@ -1,5 +1,5 @@
 package rfs;
 
-public class Airport {
+public class Airport extends Location {
 
 }
