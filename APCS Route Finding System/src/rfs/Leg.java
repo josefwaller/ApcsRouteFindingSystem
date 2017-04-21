@@ -17,6 +17,12 @@ public class Leg {
 	 */
 	public Leg(Location origin, Location destination, int distanceInKm, String days, double costPerKm){
 		
+		this.origin = origin;
+		this.destination = destination;
+		this.daysAvailable = days;
+		this.distance = distanceInKm;
+		this.costPerKm = costPerKm;
+		
 	} // LegConstructor
 
 	public Location getOrigin() {
