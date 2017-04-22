@@ -2,6 +2,8 @@ package rfs;
 
 public class TestDriver {
 	SystemManager sm = new SystemManager();
+	
+	/*
 	Location loc1 = new Airport("YYJ");
 	Location loc2 = new TruckDepot("PURVIC01");
 	Location loc3 = new BikeDeliveryLocation("Empress Hotel, Victoria BC");
@@ -32,4 +34,5 @@ public class TestDriver {
 	System.out.println(r2);
 	Route r3 = sm.findMinStepsRoute(sm.findLocation("YYJ"), sm.findLocation("Empress Hotel, Victoria BC"), "M");
 	System.out.println(r3);
+	*/
 }
