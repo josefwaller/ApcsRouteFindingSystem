@@ -46,13 +46,7 @@ public class Route {
 	 */
 	public void addLeg(Leg newLeg){
 		
-		// make sure the new Leg connects to the end of this route
-		if (newLeg.getOrigin().getName() == connectedLegs.get(connectedLegs.size() - 1).getDestination().getName()) {
-			
-			// add the new Leg
-			connectedLegs.add(newLeg);
-		} else {
-			System.err.println("Invalid Route addition.");
-		}
+		// add the new Leg
+		connectedLegs.add(newLeg);
 	} // addLeg
 } // Route

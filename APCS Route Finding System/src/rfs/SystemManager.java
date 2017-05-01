@@ -1,6 +1,7 @@
 package rfs;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class SystemManager {
 	private ArrayList<Location> locations = new ArrayList<Location>();
@@ -33,6 +34,8 @@ public class SystemManager {
 	 */
 	public void addLocation(Location L){
 		
+		locations.add(L);
+		
 	} // addLocation
 	
 	/**
@@ -40,6 +43,8 @@ public class SystemManager {
 	 * @param l The leg to be added.
 	 */
 	public void addLeg(Leg l){
+		
+		legs.add(l);
 		
 	} // addLeg
 	
@@ -50,7 +55,17 @@ public class SystemManager {
 	 * @return
 	 */
 	public Location findLocation(String name){
+		
+		for (int i = 0; i < locations.size(); i++) {
+			
+			if (locations.get(i).getName().equals(name)) {
+				return locations.get(i);
+			}
+			
+		}
+		
 		return null;
+		
 	} // findLocation
 	
 	/**
@@ -86,9 +101,90 @@ public class SystemManager {
 	 * @return The shortest (by km travelled) Route between <code>origin</origin> and <code>destination</code>
 	 */
 	public Route findShortestKmRoute (Location origin, Location destination, String day){
-		return null;
+		return findBestRoute(origin, destination, day);
 	} // findShortestKmRoute
-
+	
+	public Route findBestRoute (Location origin, Location destination, String day) {
+		
+		ArrayList<Location> deadLocations = new ArrayList();
+		HashMap<Location, Route> bestRoutes = new HashMap();
+		bestRoutes.put(origin, new Route(new ArrayList()));
+		
+		Location startingLocation = origin;
+		
+		for (int i = 0;startingLocation != destination && i < 15; i++) {
+			System.out.println("Starting round " + i);
+			
+			// updates the distances to the connections
+			updateRoutes(startingLocation, bestRoutes);
+			
+			deadLocations.add(startingLocation);
+			
+			// finds the next starting location
+			double dis = Double.MAX_VALUE;
+			for (Location l: bestRoutes.keySet()) {
+				
+				if (!deadLocations.contains(l)){
+					
+					if (bestRoutes.get(l).totalDistance() < dis) {
+						
+						startingLocation = l;
+						dis = bestRoutes.get(l).totalDistance();
+						
+					}
+					
+				}
+				
+			}
+			
+			System.out.println("Starting location is now " + startingLocation);
+			
+		}
+		
+		System.out.println("Finished!");
+		System.out.println("The shortest route is " + bestRoutes.get(destination).totalDistance());
+		
+		return null;
+	} // findBestRoute
+	
+	private void updateRoutes(Location l, HashMap<Location, Route> routes) {
+		
+		ArrayList<Leg> connectedLegs = getSortedLegs(l);
+		
+		for (Leg leg: connectedLegs) {
+			
+			Location dest = leg.getDestination();
+			double distance = routes.get(l).totalDistance() + leg.getDistance();
+			
+			if (!routes.containsKey(dest) || routes.get(dest).totalDistance() > distance) {
+				
+				Route newRoute = new Route(new ArrayList(routes.get(l).connectedLegs));
+				
+				newRoute.addLeg(leg);
+				
+				routes.put(dest, newRoute);
+				
+				System.out.println("The shortest route to " + dest + " is now " + newRoute.totalDistance());
+			}
+		
+		}
+	}
+	
+	private ArrayList<Leg> getSortedLegs(Location l) {
+		
+		ArrayList<Leg> connected = new ArrayList<Leg>();
+		
+		for (int i = 0; i < legs.size(); i++) {
+		
+			if (legs.get(i).getOrigin() == l) {
+				connected.add(legs.get(i));
+			}
+			
+		}
+		
+		return connected;
+	}
+	
 	public ArrayList<Location> getLocations() {
 		return locations;
 	} // getLocations

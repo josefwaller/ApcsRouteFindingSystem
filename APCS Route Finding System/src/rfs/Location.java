@@ -46,7 +46,7 @@ public abstract class Location {
 	 *         outgoing connections from this location.
 	 */
 	public Route shortestKmRouteTo(Location loc, String day) {
-		// TODO: code method on future deadline
+		
 		return null;
 	} // shortestKmRouteTo
 
@@ -57,4 +57,8 @@ public abstract class Location {
 	public void setName(String name) {
 		this.name = name;
 	} // setName
+	
+	public String toString() {
+		return getName();
+	}
 } // Location
