@@ -7,6 +7,18 @@ public class SystemManager {
 	private ArrayList<Location> locations = new ArrayList<Location>();
 	private ArrayList<Leg> legs = new ArrayList<Leg>(); 
 	
+	/*
+	 * What medium to use when routefinding
+	 * Ex: RouteValues.Money will be used to
+	 * Find the cheapest route
+	 */
+	// Todo: rename this
+	enum RouteValues {
+		Distance,
+		Money,
+		Steps
+	}
+	
 	/**
 	 * <code>SystemManager</code> Constructor
 	 */
@@ -110,6 +122,8 @@ public class SystemManager {
 		HashMap<Location, Route> bestRoutes = new HashMap();
 		bestRoutes.put(origin, new Route(new ArrayList()));
 		
+		RouteValues val = RouteValues.Distance;
+		
 		Location startingLocation = origin;
 		
 		for (int i = 0;startingLocation != destination && i < 15; i++) {
@@ -126,10 +140,10 @@ public class SystemManager {
 				
 				if (!deadLocations.contains(l)){
 					
-					if (bestRoutes.get(l).totalDistance() < dis) {
+					if (getRouteValue(bestRoutes.get(l), val) < dis) {
 						
 						startingLocation = l;
-						dis = bestRoutes.get(l).totalDistance();
+						dis = getRouteValue(bestRoutes.get(l), val);
 						
 					}
 					
@@ -144,8 +158,26 @@ public class SystemManager {
 		System.out.println("Finished!");
 		System.out.println("The shortest route is " + bestRoutes.get(destination).totalDistance());
 		
-		return null;
+		return bestRoutes.get(destination);
 	} // findBestRoute
+	
+	private double getRouteValue(Route one, RouteValues val) {
+		
+		if (val == RouteValues.Money) {
+			
+			return one.totalCost();
+			 
+		} else if (val == RouteValues.Distance) {
+			
+			return one.totalDistance();
+		} else if (val == RouteValues.Steps) {
+			
+			return one.totalSteps();
+		}
+		
+		System.err.println("Invalid RouteValues value");
+		return 0.0;
+	}
 	
 	private void updateRoutes(Location l, HashMap<Location, Route> routes) {
 		
