@@ -118,17 +118,17 @@ public class SystemManager {
 	
 	public Route findBestRoute (Location origin, Location destination, String day) {
 		
-		// the locations which hav already been checked
+		// the locations which have already been checked
 		ArrayList<Location> deadLocations = new ArrayList();
 		
 		// the shortest route from origin to each location
 		HashMap<Location, Route> bestRoutes = new HashMap();
 		
-		// adds the origin with an empty arraylist
+		// adds the origin with an empty ArrayList
 		bestRoutes.put(origin, new Route(new ArrayList<Leg>()));
 		
 		// the value to use when measuring routes
-		RouteValues val = RouteValues.Money;
+		RouteValues val = RouteValues.Distance;
 		
 		
 		// the starting location
@@ -137,7 +137,7 @@ public class SystemManager {
 		for (int i = 0;startingLocation != destination && i < 15; i++) {
 
 			// updates the distances to the connections
-			updateRoutes(startingLocation, bestRoutes, val);
+			updateRoutes(startingLocation, bestRoutes, val, day);
 			
 			// adds the starting location to dead locations
 			// so that we don't check it again
@@ -195,15 +195,37 @@ public class SystemManager {
 	}
 	
 	/*
+	 * Retusn the legs value based on the RouteValues value
+	 */
+	private double getLegValue(Leg l, RouteValues val) {
+		
+		if (val == RouteValues.Distance) {
+			return l.getDistance();
+		
+		} else if (val == RouteValues.Money) {
+			return l.getCostPerKm() * l.getDistance();
+			
+		} else if (val == RouteValues.Steps) {
+			return 1.0;
+		}
+		
+		System.err.println("Invalid RouteVales val");
+		return 0.0;
+	}
+	
+	/*
 	 * Goes to each route connected to l and checks if
 	 * the route from l is shorter than the current route to get there
 	 */
-	private void updateRoutes(Location l, HashMap<Location, Route> routes, RouteValues val) {
+	private void updateRoutes(Location l, HashMap<Location, Route> routes, RouteValues val, String day) {
 		
 		// gets the legs connected to l
-		ArrayList<Leg> connectedLegs = getConnectedLegs(l);
+		ArrayList<Leg> connectedLegs = getConnectedLegs(l, val);
 		
 		for (Leg leg: connectedLegs) {
+			
+			// checks the leg can be used on this 
+			if (!leg.getDaysAvailable().contains(day)) continue;
 			
 			// gets the destination of the leg
 			Location dest = leg.getDestination();
@@ -234,8 +256,10 @@ public class SystemManager {
 		}
 	}
 	
-	private ArrayList<Leg> getConnectedLegs(Location l) {
+	private ArrayList<Leg> getConnectedLegs(Location l, RouteValues val) {
 		
+		
+		// Gets all the legs connected to this location
 		ArrayList<Leg> connected = new ArrayList<Leg>();
 		
 		for (int i = 0; i < legs.size(); i++) {
@@ -243,6 +267,27 @@ public class SystemManager {
 			if (legs.get(i).getOrigin() == l) {
 				connected.add(legs.get(i));
 			}
+			
+		}
+		
+		// sorts them according to the value used
+		for(int i = 0; i < connected.size(); i++) {
+			
+			int leastIndex = i;
+			
+			for (int j = i + 1; j < connected.size(); j++) {
+				
+				if (getLegValue(connected.get(j), val) < getLegValue(connected.get(leastIndex), val)) {
+					
+					leastIndex = j;
+					
+				}
+				
+			}
+			
+			Leg temp = connected.get(i);
+			connected.set(i, connected.get(leastIndex));
+			connected.set(leastIndex, temp);
 			
 		}
 		
