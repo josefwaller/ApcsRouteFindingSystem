@@ -89,7 +89,7 @@ public class SystemManager {
 	 * @return The cheapest Route between <code>origin</origin> and <code>destination</code>
 	 */
 	public Route findCheapestRoute (Location origin, Location destination, String day){
-		return null;
+		return findBestRoute(origin, destination, day, RouteValues.Money);
 	} // findCheapestRoute
 	
 	/**
@@ -101,7 +101,7 @@ public class SystemManager {
 	 * @return The shortest (by number of steps) Route between <code>origin</origin> and <code>destination</code>
 	 */
 	public Route findMinStepsRoute (Location origin, Location destination, String day){
-		return null;
+		return findBestRoute(origin, destination, day, RouteValues.Steps);
 	} // findMinStepsRoute
 	
 	/**
@@ -113,23 +113,19 @@ public class SystemManager {
 	 * @return The shortest (by km travelled) Route between <code>origin</origin> and <code>destination</code>
 	 */
 	public Route findShortestKmRoute (Location origin, Location destination, String day){
-		return findBestRoute(origin, destination, day);
+		return findBestRoute(origin, destination, day, RouteValues.Distance);
 	} // findShortestKmRoute
 	
-	public Route findBestRoute (Location origin, Location destination, String day) {
+	public Route findBestRoute (Location origin, Location destination, String day, RouteValues val) {
 		
 		// the locations which have already been checked
-		ArrayList<Location> deadLocations = new ArrayList();
+		ArrayList<Location> deadLocations = new ArrayList<Location>();
 		
 		// the shortest route from origin to each location
-		HashMap<Location, Route> bestRoutes = new HashMap();
+		HashMap<Location, Route> bestRoutes = new HashMap<Location, Route>();
 		
 		// adds the origin with an empty ArrayList
-		bestRoutes.put(origin, new Route(new ArrayList<Leg>()));
-		
-		// the value to use when measuring routes
-		RouteValues val = RouteValues.Distance;
-		
+		bestRoutes.put(origin, new Route(new ArrayList<Leg>()));		
 		
 		// the starting location
 		Location startingLocation = origin;

@@ -34,7 +34,7 @@ public abstract class Location {
 	 *         are no outgoing connections from this location.
 	 */
 	public Route minStepsRouteTo(Location loc, String day) {
-		// TODO: code method on future deadline
+		
 		return null;
 	} // minStepsRouteTo
 
