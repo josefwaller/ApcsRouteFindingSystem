@@ -118,30 +118,43 @@ public class SystemManager {
 	
 	public Route findBestRoute (Location origin, Location destination, String day) {
 		
+		// the locations which hav already been checked
 		ArrayList<Location> deadLocations = new ArrayList();
+		
+		// the shortest route from origin to each location
 		HashMap<Location, Route> bestRoutes = new HashMap();
-		bestRoutes.put(origin, new Route(new ArrayList()));
 		
-		RouteValues val = RouteValues.Distance;
+		// adds the origin with an empty arraylist
+		bestRoutes.put(origin, new Route(new ArrayList<Leg>()));
 		
+		// the value to use when measuring routes
+		RouteValues val = RouteValues.Money;
+		
+		
+		// the starting location
 		Location startingLocation = origin;
 		
 		for (int i = 0;startingLocation != destination && i < 15; i++) {
-			System.out.println("Starting round " + i);
-			
+
 			// updates the distances to the connections
-			updateRoutes(startingLocation, bestRoutes);
+			updateRoutes(startingLocation, bestRoutes, val);
 			
+			// adds the starting location to dead locations
+			// so that we don't check it again
 			deadLocations.add(startingLocation);
 			
 			// finds the next starting location
 			double dis = Double.MAX_VALUE;
+			
 			for (Location l: bestRoutes.keySet()) {
 				
+				// checks it hasn't already been used
 				if (!deadLocations.contains(l)){
 					
+					// checks if it's the shortest
 					if (getRouteValue(bestRoutes.get(l), val) < dis) {
 						
+						// sets this location as startingLocation
 						startingLocation = l;
 						dis = getRouteValue(bestRoutes.get(l), val);
 						
@@ -156,53 +169,72 @@ public class SystemManager {
 		}
 		
 		System.out.println("Finished!");
-		System.out.println("The shortest route is " + bestRoutes.get(destination).totalDistance());
+		System.out.println("The best route is " + getRouteValue(bestRoutes.get(destination), val));
 		
 		return bestRoutes.get(destination);
 	} // findBestRoute
 	
+	/*
+	 * Returns the route's value based on an RouteValues value
+	 */
 	private double getRouteValue(Route one, RouteValues val) {
 		
 		if (val == RouteValues.Money) {
-			
 			return one.totalCost();
 			 
 		} else if (val == RouteValues.Distance) {
-			
 			return one.totalDistance();
-		} else if (val == RouteValues.Steps) {
 			
+		} else if (val == RouteValues.Steps) {
 			return one.totalSteps();
+			
 		}
 		
 		System.err.println("Invalid RouteValues value");
 		return 0.0;
 	}
 	
-	private void updateRoutes(Location l, HashMap<Location, Route> routes) {
+	/*
+	 * Goes to each route connected to l and checks if
+	 * the route from l is shorter than the current route to get there
+	 */
+	private void updateRoutes(Location l, HashMap<Location, Route> routes, RouteValues val) {
 		
-		ArrayList<Leg> connectedLegs = getSortedLegs(l);
+		// gets the legs connected to l
+		ArrayList<Leg> connectedLegs = getConnectedLegs(l);
 		
 		for (Leg leg: connectedLegs) {
 			
+			// gets the destination of the leg
 			Location dest = leg.getDestination();
-			double distance = routes.get(l).totalDistance() + leg.getDistance();
 			
-			if (!routes.containsKey(dest) || routes.get(dest).totalDistance() > distance) {
+			// creates a route to compare values
+			Route r = new Route(new ArrayList<Leg>());
+			r.addLeg(leg);
+			
+			// gets the value to compare
+			double distance = getRouteValue(routes.get(l), val) + getRouteValue(r, val);
+			
+			// checks if the dictionary doesn't have a route to the destination
+			// or if the route going through l is shorter
+			if (!routes.containsKey(dest) || getRouteValue(routes.get(dest), val) > distance) {
 				
-				Route newRoute = new Route(new ArrayList(routes.get(l).connectedLegs));
+				// creates a new route, which is just a copy of the shortest route to l
+				Route newRoute = new Route(new ArrayList<Leg>(routes.get(l).connectedLegs));
 				
+				// adds the newest leg to it
 				newRoute.addLeg(leg);
 				
+				// adds it to the HashMap
 				routes.put(dest, newRoute);
 				
-				System.out.println("The shortest route to " + dest + " is now " + newRoute.totalDistance());
+				System.out.println("The best route to " + dest + " is now " + getRouteValue(newRoute, val));
 			}
 		
 		}
 	}
 	
-	private ArrayList<Leg> getSortedLegs(Location l) {
+	private ArrayList<Leg> getConnectedLegs(Location l) {
 		
 		ArrayList<Leg> connected = new ArrayList<Leg>();
 		
