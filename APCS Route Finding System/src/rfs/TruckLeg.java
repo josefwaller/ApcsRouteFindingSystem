@@ -12,7 +12,7 @@ public class TruckLeg extends Leg {
 	 * @param days
 	 */
 	public TruckLeg(Location origin, Location destination, int distanceInKm, String days) {
-		super(origin, destination, distanceInKm, days, COST_PER_KILOMETER);
 		
+		super(origin, destination, distanceInKm, days, COST_PER_KILOMETER);		
 	} // TuckLeg Constructor
 } // TruckLeg

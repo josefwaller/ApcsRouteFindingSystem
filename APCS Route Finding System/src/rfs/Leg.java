@@ -24,6 +24,13 @@ public class Leg {
 		this.costPerKm = costPerKm;
 		
 	} // LegConstructor
+	
+	@Override
+	public String toString(){
+		String s = "";
+		s += "\"" + origin.toString() + "\" to \"" + destination.toString() + "\" on " + daysAvailable + " over " + distance + "km at " + costPerKm + "$/km";
+		return s;
+	}
 
 	public Location getOrigin() {
 		return origin;

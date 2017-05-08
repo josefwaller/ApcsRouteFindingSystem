@@ -49,4 +49,16 @@ public class Route {
 		// add the new Leg
 		connectedLegs.add(newLeg);
 	} // addLeg
+	
+	/**
+	 * @return A string representation of this Route
+	 */
+	@Override
+	public String toString(){
+		String s = "[";
+		for(int i = 0; i < connectedLegs.size(); i++){
+			s += i + ": (" + connectedLegs.get(i).toString() + ((i == connectedLegs.size() - 1)? ")":")\n");
+		}
+		return s + "]";
+	} // toString
 } // Route

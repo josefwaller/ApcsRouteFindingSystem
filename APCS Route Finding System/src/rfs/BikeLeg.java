@@ -10,7 +10,7 @@ public class BikeLeg extends Leg{
 	 * @param days String representing the days of the week this Leg runs.  
 	 */
 	public BikeLeg(Location origin, Location destination, int distanceInKm, String days) {
-		super(origin, destination, distanceInKm, days, 1);
 
+		super(origin, destination, distanceInKm, days, 1);
 	} // BikeLeg Constructor
 } // BikeLeg

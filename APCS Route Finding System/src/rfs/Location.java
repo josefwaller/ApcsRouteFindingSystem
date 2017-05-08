@@ -14,6 +14,7 @@ public abstract class Location {
 		connectingLegs.add(newLeg);
 	} // addConnection
 
+	 
 	/**
 	 * @param loc The <code>Location</code> to find a route to.
 	 * @param day The day to find the route for.
@@ -21,10 +22,11 @@ public abstract class Location {
 	 *         Returns null if no route is found or if there are no outgoing
 	 *         connections from this location.
 	 */
+	/* UNUSED, BUT IN CLASS DIAGRAM
 	public Route cheapestRouteTo(Location loc, String day) {
-		// TODO: code method on future deadline
 		return null;
 	} // cheapestRouteTo
+	*/
 
 	/**
 	 * @param loc The <code>Location</code> to find a route to.
@@ -33,10 +35,11 @@ public abstract class Location {
 	 *         and loc on given day. Returns null if no route is found or if there 
 	 *         are no outgoing connections from this location.
 	 */
-	public Route minStepsRouteTo(Location loc, String day) {
-		
+	/* UNUSED, BUT IN CLASS DIAGRAM
+	public Route minStepsRouteTo(Location loc, String day) {		
 		return null;
 	} // minStepsRouteTo
+	*/
 
 	/**
 	 * @param loc The <code>Location</code> to find a route to.
@@ -45,11 +48,12 @@ public abstract class Location {
 	 *         a given day. Returns null if no route is found or if there are no
 	 *         outgoing connections from this location.
 	 */
-	public Route shortestKmRouteTo(Location loc, String day) {
-		
+	/* UNUSED, BUT IN CLASS DIAGRAM
+	public Route shortestKmRouteTo(Location loc, String day) {		
 		return null;
 	} // shortestKmRouteTo
-
+	*/
+	
 	public String getName() {
 		return name;
 	} // getName
@@ -58,6 +62,7 @@ public abstract class Location {
 		this.name = name;
 	} // setName
 	
+	@Override
 	public String toString() {
 		return getName();
 	}
